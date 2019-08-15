@@ -7,9 +7,11 @@ class Scoring(Enum):
 
 
 class Strategy(object):
-    def __init__(self, n_players, largest_card):
+    def __init__(self, n_players, largest_card, agent=None):
         self.n_players = n_players
         self.largest_card = largest_card
+        if agent:
+            self.agent = agent
         
         self.scoring = Scoring.SOLN
         print(f'Scoring by {self.scoring}')
@@ -39,6 +41,12 @@ class Strategy(object):
         scores = [self.score(card, unseen_cards) for card in hands[0]]
         card_indices[0] = np.argmax(scores)
 
+        return card_indices
+
+    def rl_vs_random(self, hands, history):
+        # all other players are random
+        card_indices = self.choose_random(hands, history)
+        card_indices[0] = self.agent.select_action(hands[0], history)
         return card_indices
         
     def get_unseen_cards(self, history, current_hand):

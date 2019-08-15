@@ -4,11 +4,11 @@ from .strategy import Strategy
 
 
 class Choosing(Enum):
-    RANDOM, BEST, BEST_VS_RANDOM = range(3)
+    RANDOM, BEST, BEST_VS_RANDOM, RL_VS_RANDOM = range(4)
 
 
 class Game(object):
-    def __init__(self, n_players, largest_card, hand_size, n_rounds):
+    def __init__(self, n_players, largest_card, hand_size, n_rounds, agent=None):
         self.n_players = n_players
         self.largest_card = largest_card
         self.hand_size = hand_size
@@ -17,10 +17,10 @@ class Game(object):
         self.WIN_REWARD = 1
         self.LOSE_REWARD = -1
         
-        self.choosing = Choosing.BEST_VS_RANDOM
+        self.choosing = Choosing.RL_VS_RANDOM
         print(f'Choosing cards by {self.choosing}')
         
-        self.strategy = Strategy(n_players, largest_card)
+        self.strategy = Strategy(n_players, largest_card, agent)
     
     def play_game(self):
         hands = self.sample_hands()
@@ -58,6 +58,8 @@ class Game(object):
             return self.strategy.choose_best(hands, history)
         elif self.choosing == Choosing.BEST_VS_RANDOM:
             return self.strategy.best_vs_random(hands, history)
+        elif self.choosing == Choosing.RL_VS_RANDOM:
+            return self.strategy.rl_vs_random(hands, history)
         else:
             raise
 

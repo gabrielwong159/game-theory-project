@@ -2,6 +2,7 @@ import numpy as np
 from tqdm import trange
 
 from game import Game
+from rl import Agent
 from plots import plot_cum_scores, plot_reward_freq
 
 N_PLAYERS = 5
@@ -16,9 +17,11 @@ np.random.seed(0)
 
 
 def main():
-    game = Game(N_PLAYERS, LARGEST_CARD, HAND_SIZE, N_ROUNDS)
-    scores_per_game = []
+    model_path = '../rl/reinforce/models/model_045500_537.pth'
+    agent = Agent(LARGEST_CARD, HAND_SIZE, model_path)
+    game = Game(N_PLAYERS, LARGEST_CARD, HAND_SIZE, N_ROUNDS, agent)
 
+    scores_per_game = []
     for i in trange(N_GAMES):
         scores = game.play_game()
         scores_per_game.append(scores)
